@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 
+	        加载proeprties配置文件
+	    url:引用网络路径下的/磁盘路径下的
+	    resource:类路径
+    -->
+    <properties resource="jdbc.properties" />
+    
+    <settings>
+        <!-- 开启二级缓存 -->
+        <setting name="cacheEnabled" value="true"/>
+        <!-- 懒加载  两个一起加上-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+    </settings>
+    
+	<!-- 环境配置 -->
+	<environments default="dev_mysql"><!-- 默认使用dev_mysql环境 -->
+	    <!-- oracle环境 -->
+	    <environment id="dev_oracle">
+	        <transactionManager type="JDBC"/>
+	        <dataSource type="POOLED"><!-- 数据源 -->
+	            <property name="driver" value="${oracle.driver}"/>
+				<property name="url" value="${oracle.url}"/>
+				<property name="username" value="${oracle.username}"/>
+				<property name="password" value="${oracle.password}"/>
+	        </dataSource>
+	    </environment>
+	    <!-- mysql环境 -->
+		<environment id="dev_mysql">
+			<transactionManager type="JDBC"/><!-- 事务管理器 -->
+			<dataSource type="POOLED"><!-- 数据源 -->
+				<property name="driver" value="${mysql.driver}"/>
+				<property name="url" value="${mysql.url}"/>
+				<property name="username" value="${mysql.username}"/>
+				<property name="password" value="${mysql.password}"/>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<!-- 
+	    配置数据库厂商 type = 'DB_VENDOR'
+	  对应xml里的sql可以指定哪个数据库厂商  databaseId
+	-->
+	<databaseIdProvider type="DB_VENDOR">
+	    <property name="MySQL" value="mysql"/>
+	    <property name="Oracle" value="oracle"/>
+	    <property name="SQL Server" value="sqlserver"/>
+	</databaseIdProvider>
+	
+	<!-- 将sql映射注册到全局配置中 -->
+	<mappers>
+		<mapper resource="mappers/student.xml"/><!-- xml文件注入 -->
+		<mapper resource="mappers/detailinfo.xml"/><!-- xml文件注入 -->
+		<mapper resource="mappers/employee.xml"/><!-- xml文件注入 -->
+		<mapper resource="mappers/department.xml"/><!-- xml文件注入 -->
+<!-- 		<mapper class=""/>接口注入 -->
+<!--         <package name=""/>批量注入 -->
+	</mappers>
+</configuration>

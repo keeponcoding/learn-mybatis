@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leilei.learn.mybatis.inter.EmployeeMapper">
+    <!-- 整合第三方缓存 ehcache -->
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+
+    <!-- 开启二级缓存 -->
+<!--     <cache/> -->
+
+    <!-- 关联查询方式一 -->
+    <resultMap type="com.leilei.learn.mybatis.pojo.Employee" id="empAndDept">
+        <id column="id" property="id"/>
+        <association property="dept" javaType="com.leilei.learn.mybatis.pojo.Department"><!-- javaType必须加上 -->
+            <id column="did" property="id" />
+            <result column="deptName" property="deptName" />
+        </association>
+    </resultMap>
+    <!-- 接口式编程 namespace对应接口的全类名 id对应方法名 -->
+	<select id="getEmpAndDept" resultMap="empAndDept">
+		select 
+		e.id,e.name,e.gender,
+		d.id did,d.deptName 
+		from tb_employee e,tb_department d 
+		where e.d_id = d.id and e.id = #{id}
+	</select>
+	<!-- 关联查询方式一 -->
+	<resultMap type="com.leilei.learn.mybatis.pojo.Employee" id="empAndDept2">
+	    <id column="id" property="id" />
+	    <association property="dept" select="com.leilei.learn.mybatis.inter.DepartmentMapper.getDeptById" column="did">
+	    </association>
+	</resultMap>
+	<select id="getEmpAndDept2" resultMap="empAndDept2">
+	    select
+		    id,
+		    name,
+		    gender,
+		    d_id did  
+	    from tb_employee 
+	    where id = #{id}
+	</select>
+	
+	<!-- 根据部门Id查询员工 -->
+	<select id="getEmpByDid" resultType="com.leilei.learn.mybatis.pojo.Employee">
+	    select
+		    id,
+		    name,
+		    gender  
+	    from tb_employee 
+	    where d_id = #{did}
+	</select>
+	
+	<!-- 根据员工Id查询员工信息 -->
+	<select id="getEmpById" resultType="com.leilei.learn.mybatis.pojo.Employee">
+	    select
+		    id,
+		    name,
+		    gender  
+	    from tb_employee 
+	    where id = #{id}
+	</select>
+	
+</mapper>

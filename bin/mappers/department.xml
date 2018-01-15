@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leilei.learn.mybatis.inter.DepartmentMapper">
+
+    <select id="getDeptById" resultType="com.leilei.learn.mybatis.pojo.Department">
+        select * from tb_department where id = #{id}
+    </select>
+    
+    <!-- 非分布查询 =============================== -->
+    <resultMap type="com.leilei.learn.mybatis.pojo.Department" id="deptAndEmp">
+        <id column="id" property="id" />
+        <result column="deptName" property="deptName" />
+        <!-- ofType 对应的是实体类全路径 -->
+        <collection property="emps" ofType="com.leilei.learn.mybatis.pojo.Employee">
+            <id column="eid" property="id"  />
+            <result column="name" property="name" />
+            <result column="gender" property="gender" />
+        </collection>
+    </resultMap>
+    <select id="getDeptAndEmp" resultMap="deptAndEmp">
+        select d.id,d.deptName,e.id eid,e.name,e.gender from tb_department d,tb_employee e where d.id = e.d_id and d.id = #{id}
+    </select>
+    <!-- 非分布查询 =============================== -->
+    
+    <!-- 分布查询=================================== -->
+    <resultMap type="com.leilei.learn.mybatis.pojo.Department" id="deptAndEmp2">
+        <id column="id" property="id" />
+        <result column="deptName" property="deptName" />
+        <!-- ofType 对应的是实体类全路径 -->
+        <collection property="emps" select="com.leilei.learn.mybatis.inter.EmployeeMapper.getEmpByDid"
+         column="id" ><!-- 如果传输的列值是多个的话    column="{key1=column1,key2=column2}" key对应 getEmpByDid方法中#{}中的参数-->
+        </collection>
+    </resultMap>
+    <select id="getDeptAndEmp2" resultMap="deptAndEmp2">
+        select d.id,d.deptName from tb_department d where d.id = #{id}
+    </select>
+    <!-- 分布查询=================================== -->
+	
+	<!-- 根据ids获取depts -->
+	<select id="getDeptsByIds" resultType="com.leilei.learn.mybatis.pojo.Department" >
+	    select * from tb_department
+	    <foreach collection="ids" item="param_id" open="where id in (" close=")" separator=",">
+	        #{param_id}
+	    </foreach>
+	</select>
+	
+</mapper>

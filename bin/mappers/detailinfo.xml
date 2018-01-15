@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leilei.learn.mybatis.inter.DetailInfoInter">
+    <!-- 接口式编程 namespace对应接口的全类名 id对应方法名 -->
+	<select id="getDetailInfo" resultType="com.leilei.learn.mybatis.pojo.DetailInfo" parameterType="java.lang.String">
+		select * from tb_detailinfo where id = #{id}
+	</select>
+	
+</mapper>

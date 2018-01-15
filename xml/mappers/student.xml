@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leilei.learn.mybatis.inter.StudentInter">
+    <resultMap type="com.leilei.learn.mybatis.pojo.Student" id="student">
+        <id column="id" property="id" />
+<!--         <result column="name" property="name" /> -->
+<!--         <result column="gener" property="gener" /> -->
+    </resultMap>
+    <!-- 接口式编程 namespace对应接口的全类名 id对应方法名 -->
+	<select id="getStudentInfo" resultMap="student" parameterType="java.lang.String">
+		select id,name,gener from tb_student where id = #{id}
+	</select>
+	
+	<!-- 联合查询方式一 start============================ -->
+	<resultMap type="com.leilei.learn.mybatis.pojo.Student" id="stu">
+	    <id column="id" property="id" />
+<!-- 	    <result column="name" property="name" /> -->
+<!-- 	    <result column="age" property="age" /> -->
+<!-- 	    <result column="gener" property="gener" /> -->
+	    <!-- 关联 property对应实体类中的实体字段  javaType对应实体类 -->
+	    <association property="detailInfo" javaType="com.leilei.learn.mybatis.pojo.DetailInfo">
+	        <id column="did" property="id" />
+	        <result column="address" property="address" />
+	    </association>
+	</resultMap>
+	
+	<select id="getStudentAndDetailInfo" resultMap="stu">
+	    select 
+		    s.id id,s.name name,s.age age,s.gener gener,
+		    d.id did,d.address address
+	    from tb_student s,tb_detailinfo d
+	    where s.d_id = d.id
+	    and s.id = #{id}
+	</select>
+	<!-- 联合查询方式一 end============================ -->
+	
+	<!-- 联合查询方式二  start============================ -->
+	<resultMap type="com.leilei.learn.mybatis.pojo.Student" id="stu2">
+	    <id column="id" property="id" />
+<!-- 	    <result column="name" property="name" /> 只要字段与实体类对应 在这里可以不写   下同 -->
+<!-- 	    <result column="age" property="age" /> -->
+<!-- 	    <result column="gener" property="gener" /> -->
+	    <!-- 关联 property对应实体类中的实体字段  javaType对应实体类 -->
+	    <association property="detailInfo" select="com.leilei.learn.mybatis.inter.DetailInfoInter.getDetailInfo"
+	        column="did">
+	    </association>
+	    <!-- 定义集合的封装规则  ofType是指集合中的实体类型 全路径 -->
+<!-- 	    <collection property="" ofType=""></collection> -->
+	</resultMap>
+	
+	<select id="getStudent" resultMap="stu2">
+	    select 
+	        s.id id,s.name name,s.age age,s.gener gener,s.d_id did
+	    from tb_student s
+	    where s.id = #{id}
+	</select>
+	<!-- 联合查询方式二  end============================== -->
+	
+</mapper>
